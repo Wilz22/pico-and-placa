@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+# Pico y Placa Predictor
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
 
-## Available Scripts
+This project is a web-based **Pico y Placa Predictor** developed using **React** and **PrimeReact** components. The application helps users check if their vehicle can be on the road based on Ecuador's Pico y Placa restriction system, which limits road use depending on the last digit of the vehicle’s license plate, the day of the week, and the time of day.
 
-In the project directory, you can run:
+### Features
 
-### `npm start`
+- **License Plate Input**: The user can enter a vehicle license plate number (up to 7 characters).
+- **Date and Time Selector**: The user can select a specific date and time.
+- **Pico y Placa Verification**: Based on the selected date, time, and the last digit of the license plate, the application tells the user whether they are allowed to drive.
+- **Pico y Placa Rules Display**: Users can view the rules for the Pico y Placa restrictions.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Tech Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **React**: Frontend library used to build the user interface.
+- **PrimeReact**: UI component library for React used for interactive elements (like Calendar, Toast, InputText, etc.).
+- **CSS (custom)**: Used for additional styling.
+- **date-fns**: For date formatting.
 
-### `npm test`
+## Project Setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+To run this project locally, ensure you have the following installed:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js (version 12.x or above)
+- npm (version 6.x or above)
+## Project Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- `src/`: Contains the main source code for the React app.
+  - `components/`: Includes React components like `PicoPlacaForm`.
+  - `services/`: Contains the `PicoPlacaService.js` file responsible for handling the business logic.
+  - `assets/images/`: Holds the image assets used in the application.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Key Components
 
-### `npm run eject`
+1. **PicoPlacaForm**:
+   - This component renders the form where users can enter their license plate number, select a date and time, and check whether their vehicle can drive.
+   - The form also handles input validation, ensuring that the user provides a license plate number with a maximum of 7 characters and a valid date/time.
+   - If any required fields are left empty, it displays an error message below the corresponding field.
+   - Additionally, the form features a button that opens a dialog box with the rules for Pico y Placa restrictions.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. **PicoPlacaService**:
+   - This service is responsible for the logic that determines if a vehicle can drive.
+   - It takes in the license plate number, date, and time as parameters and checks the restrictions based on the last digit of the license plate, the day of the week, and the time range.
+   - The service returns a boolean value indicating whether or not the vehicle is allowed to be on the road.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Usage
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Enter your **license plate number** (up to 7 characters) in the input field.
+2. Select the **date** and **time** using the calendar component.
+3. Click the **"Check Pico and Placa"** button to find out if your vehicle can drive on the specified date and time.
+4. If you're unsure about the rules, click the **"View Pico and Placa Rules"** button to open a dialog that explains the restrictions based on the last digit of your license plate.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Screenshots
 
-## Learn More
+### Pico y Placa Form
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+![Pico y Placa Form](src/assets/images/picoandplacaimage.png)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Installation
 
-### Code Splitting
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/pico-y-placa-predictor.git
+    
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+2. Navigate to the project directory:
+   ```bash
+   cd pico-y-placa-predictor
 
-### Analyzing the Bundle Size
+3. Install the dependencies:
+   ```bash
+   npm install
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. Run the Project
+After installation, you can start the development server using:
+   ```bash
+   npm start
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

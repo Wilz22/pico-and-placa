@@ -1,9 +1,9 @@
 import React from 'react';
 import PicoPlacaForm from './components/PicoPlacaForm';
-import 'primereact/resources/themes/saga-blue/theme.css';  // Cambia el tema si prefieres otro
-import 'primereact/resources/primereact.min.css';           // Estilos de PrimeReact
-import 'primeicons/primeicons.css';                         // Iconos de PrimeReact
-import './App.css';  // Estilos personalizados
+import 'primereact/resources/themes/lara-dark-blue/theme.css';  
+import 'primereact/resources/primereact.min.css';           
+import 'primeicons/primeicons.css';                       
+import './App.css';  
 
 function App() {
   return (

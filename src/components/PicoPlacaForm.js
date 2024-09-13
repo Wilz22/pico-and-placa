@@ -5,60 +5,119 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Card } from 'primereact/card';
 import { Toast } from 'primereact/toast';
+import { Message } from 'primereact/message';
 import PicoPlacaService from '../services/PicoPlacaService';
 import { format } from 'date-fns';
+import picoPlacaImage from '../assets/images/picoandplaca.jpeg';
 
 const PicoPlacaForm = () => {
-    const [placa, setPlaca] = useState('');
-    const [fechaHora, setFechaHora] = useState(null);
-    const toast = useRef(null);  // Referencia para el componente Toast
-    const [mostrarReglas, setMostrarReglas] = useState(false);
+    const [plate, setPlate] = useState('');
+    const [dateTime, setDateTime] = useState(null);
+    const [errors, setErrors] = useState({ plate: false, dateTime: false });
+    const toast = useRef(null);
+    const [showRules, setShowRules] = useState(false);
 
-    const verificarPicoPlaca = () => {
-        if (!placa || !fechaHora) {
-            toast.current.show({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, ingrese todos los datos', life: 3000 });
+    const verifyPicoPlaca = () => {
+        // Validate if the plate number and date/time fields are filled
+        let validationErrors = { plate: false, dateTime: false };
+    
+        // Check if the plate field is empty
+        if (plate === '') {
+            validationErrors.plate = true;
+        }
+        // Check if the dateTime field is empty
+        if (!dateTime) {
+            validationErrors.dateTime = true;
+        }
+    
+        // Update the state with the errors found
+        setErrors(validationErrors);
+    
+        // If there are validation errors, show a warning message and stop the process
+        if (validationErrors.plate || validationErrors.dateTime) {
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter all fields', life: 3000 });
             return;
         }
-
-        const fechaStr = format(fechaHora, 'yyyy-MM-dd');
-        const horaStr = format(fechaHora, 'HH:mm');
-        const puedeCircular = PicoPlacaService.verificar(placa, fechaStr, horaStr);
-
-        if (puedeCircular) {
-            toast.current.show({ severity: 'success', summary: 'Permitido', detail: 'Puede circular', life: 3000 });
+    
+        // Format the date and time to the required format
+        const dateStr = format(dateTime, 'yyyy-MM-dd');
+        const timeStr = format(dateTime, 'HH:mm');
+        
+        // Call the PicoPlacaService to check if the vehicle can drive
+        const canDrive = PicoPlacaService.verify(plate, dateStr, timeStr);
+    
+        // Show success or error message based on the result from the service
+        if (canDrive) {
+            toast.current.show({ severity: 'success', summary: 'Allowed', detail: 'You can drive', life: 3000 });
         } else {
-            toast.current.show({ severity: 'error', summary: 'Restringido', detail: 'No puede circular', life: 3000 });
+            toast.current.show({ severity: 'error', summary: 'Restricted', detail: 'You cannot drive', life: 3000 });
         }
     };
+    
+    const handlePlateChange = (e) => {
+        // Restrict the license plate input to a maximum of 7 characters
+        const value = e.target.value;
+        if (value.length <= 7) {
+            setPlate(value);
+        }
+    };
+    
 
     return (
         <div className="form-container">
-            <Toast ref={toast} /> {/* Aquí se coloca el Toast */}
+            <Toast ref={toast} />
 
-            <Card title="Predictor Pico y Placa" className="p-shadow-6 p-p-4">
+            <Card title="Pico and Placa Predictor" className="p-shadow-6 p-p-4">
                 <div className="p-field">
-                    <label htmlFor="placa">Número de Placa</label>
-                    <InputText id="placa" value={placa} onChange={(e) => setPlaca(e.target.value)} placeholder="PBX-1234" />
+                    <br/>
+                    <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <img src={picoPlacaImage} alt="Pico y Placa" style={{ width: '200px', height: 'auto' }} />
+                    </div>
+                    <label htmlFor="plate">License Plate Number</label>
+                    <InputText
+                        id="plate"
+                        value={plate}
+                        onChange={handlePlateChange}  // Limit to 7 characters
+                        placeholder="PBX1234"
+                        className={errors.plate ? 'p-invalid' : ''}  // Change color if error
+                    />
+                    {errors.plate && <Message severity="error" text="License plate is required and must be up to 7 characters." />}
                 </div>
+                <br/>
                 <div className="p-field">
-                    <label htmlFor="fechaHora">Fecha y Hora</label>
-                    <Calendar id="fechaHora" value={fechaHora} onChange={(e) => setFechaHora(e.value)} showIcon showTime hourFormat="24" />
+                    <label htmlFor="dateTime">Date and Time</label>
+                    <br/>
+                    <Calendar
+                        id="dateTime"
+                        value={dateTime}
+                        onChange={(e) => setDateTime(e.value)}
+                        showIcon
+                        showTime
+                        showButtonBar 
+                        hourFormat="24"
+                        className={errors.dateTime ? 'p-invalid' : ''}  
+                    />
+                    {errors.dateTime && <Message severity="error" text="Date and time are required." />}
                 </div>
-                <Button label="Verificar Pico y Placa" icon="pi pi-check" className="p-button-success" onClick={verificarPicoPlaca} />
-                
-                <Button label="Ver Reglas de Pico y Placa" icon="pi pi-info-circle" className="p-button-link p-mt-3" onClick={() => setMostrarReglas(true)} />
+                <br/>
+                {/* Button to verify the plate */}
+                <Button label="Check Pico and Placa" icon="pi pi-check" className="p-button-success" onClick={verifyPicoPlaca} />
+                <br/>
+                <br/>
+                {/* Button to show the rules */}
+                <Button label="View Pico and Placa Rules" icon="pi pi-info-circle" className="p-button-link p-mt-3" onClick={() => setShowRules(true)} />
 
-                {/* Diálogo para mostrar las reglas */}
-                <Dialog header="Reglas del Pico y Placa" visible={mostrarReglas} style={{ width: '50vw' }} onHide={() => setMostrarReglas(false)}>
-                    <p>Las restricciones de Pico y Placa están determinadas por el último dígito de la placa:</p>
+                {/* Dialog to show the Pico and Placa rules */}
+                <Dialog header="Pico and Placa Rules" visible={showRules} style={{ width: '50vw' }} onHide={() => setShowRules(false)}>
+                    <p>The Pico and Placa restrictions are determined by the last digit of the license plate:</p>
                     <ul>
-                        <li><strong>Lunes:</strong> Placas terminadas en 1 y 2.</li>
-                        <li><strong>Martes:</strong> Placas terminadas en 3 y 4.</li>
-                        <li><strong>Miércoles:</strong> Placas terminadas en 5 y 6.</li>
-                        <li><strong>Jueves:</strong> Placas terminadas en 7 y 8.</li>
-                        <li><strong>Viernes:</strong> Placas terminadas en 9 y 0.</li>
+                        <li><strong>Monday:</strong> Plates ending in 1 and 2.</li>
+                        <li><strong>Tuesday:</strong> Plates ending in 3 and 4.</li>
+                        <li><strong>Wednesday:</strong> Plates ending in 5 and 6.</li>
+                        <li><strong>Thursday:</strong> Plates ending in 7 and 8.</li>
+                        <li><strong>Friday:</strong> Plates ending in 9 and 0.</li>
                     </ul>
-                    <p>Horarios restringidos: de 07:00 a 09:30 y de 16:00 a 19:30.</p>
+                    <p>Restricted hours: from 07:00 to 09:30 and from 16:00 to 19:30.</p>
                 </Dialog>
             </Card>
         </div>
